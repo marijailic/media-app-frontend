@@ -12,7 +12,7 @@
             </div>
 
             <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form class="space-y-6" action="#" method="POST">
+                <form class="space-y-6" @submit.prevent="handleLogin">
                     <div>
                         <label
                             for="email"
@@ -21,6 +21,7 @@
                         >
                         <div class="mt-2">
                             <input
+                                v-model="email"
                                 type="email"
                                 name="email"
                                 id="email"
@@ -48,6 +49,7 @@
                         </div>
                         <div class="mt-2">
                             <input
+                                v-model="password"
                                 type="password"
                                 name="password"
                                 id="password"
@@ -80,3 +82,32 @@
         </div>
     </div>
 </template>
+
+<script>
+import { login } from "@/services/authService";
+
+export default {
+    name: "LoginView",
+    data: function () {
+        return {
+            email: "",
+            password: "",
+        };
+    },
+    methods: {
+        async handleLogin() {
+            const loggedIn = await login({
+                email: this.email,
+                password: this.password,
+            });
+
+            if (!loggedIn) {
+                this.$router.push("/error");
+                return;
+            }
+
+            this.$router.push("/");
+        },
+    },
+};
+</script>
