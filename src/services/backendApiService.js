@@ -27,4 +27,15 @@ export default {
             body,
         });
     },
+    get: async ({ url, headers = {} }) => {
+        const authHeaders = {
+            ...getAuthHeaders(),
+            ...headers,
+        };
+
+        return await fetch(`${backendUrl}/${trimUrl(url)}`, {
+            method: "GET",
+            headers: authHeaders,
+        });
+    },
 };
