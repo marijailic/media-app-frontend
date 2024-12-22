@@ -24,3 +24,5 @@ export const login = async ({ email, password }) => {
 
     return true;
 };
+
+// TODO:: dodati logout

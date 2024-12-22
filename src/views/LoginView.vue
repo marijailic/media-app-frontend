@@ -86,6 +86,9 @@
 <script>
 import { login } from "@/services/authService";
 
+// TODO:: dodati dinamicke poruke - ne ide sve na error
+// TODO:: You should be. - dodati registraciju na backend?
+
 export default {
     name: "LoginView",
     data: function () {

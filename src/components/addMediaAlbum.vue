@@ -81,7 +81,7 @@ export default {
         },
         finishUpload() {
             console.log("MediaAlbum upload finished!");
-            // TODO:: zatvori popup
+            // TODO:: zatvori popup, prikazi album na home
         },
     },
 };
