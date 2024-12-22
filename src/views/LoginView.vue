@@ -60,12 +60,18 @@
                         </div>
                     </div>
 
+                    <div v-if="errorMessage">
+                        <p class="mt-2 text-center text-sm/6 text-white/40">
+                            {{ errorMessage }}
+                        </p>
+                    </div>
+
                     <div>
                         <button
                             type="submit"
                             class="flex w-full justify-center rounded-md bg-blue/75 px-3 py-1.5 text-sm/6 font-semibold text-white/95 shadow-sm hover:bg-blue/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue/90"
                         >
-                            Sign in
+                            Sign In
                         </button>
                     </div>
                 </form>
@@ -86,7 +92,6 @@
 <script>
 import { login } from "@/services/authService";
 
-// TODO:: dodati dinamicke poruke - ne ide sve na error
 // TODO:: You should be. - dodati registraciju na backend?
 
 export default {
@@ -95,17 +100,21 @@ export default {
         return {
             email: "",
             password: "",
+            errorMessage: "",
         };
     },
     methods: {
         async handleLogin() {
+            this.errorMessage = "";
+
             const loggedIn = await login({
                 email: this.email,
                 password: this.password,
             });
 
             if (!loggedIn) {
-                this.$router.push("/error");
+                this.errorMessage =
+                    "Invalid email or password. Please try again.";
                 return;
             }
 
