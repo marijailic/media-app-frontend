@@ -39,6 +39,7 @@ import { v4 as uuidv4 } from "uuid";
 import backendApiService from "@/services/backendApiService.js";
 
 export default {
+    name: "addMediaAlbum",
     data() {
         return {
             files: [],
