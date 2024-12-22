@@ -1,9 +1,15 @@
 <template>
     <RouterView />
+
+    <Popup
+        v-if="popupTriggers.addMediaAlbumTrigger"
+        :TogglePopup="() => TogglePopup('addMediaAlbumTrigger')"
+    >
+    </Popup>
+
     <button
-        class="fixed bottom-10 right-10 w-14 h-14 rounded-full bg-blue/75 text-white/95 shadow-lg flex items-center justify-center z-50 hover:bg-blue/90 transition-all"
-        @click="addNewMediaAlbum"
-        aria-label="Add"
+        class="fixed bottom-10 right-10 w-14 h-14 rounded-full bg-blue/75 text-white/95 shadow-lg flex items-center justify-center z-10 hover:bg-blue/90 transition-all"
+        @click="() => TogglePopup('addMediaAlbumTrigger')"
     >
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -23,11 +29,26 @@
 </template>
 
 <script>
+import { ref } from "vue";
+import Popup from "@/components/Popup.vue";
+
 export default {
-    methods: {
-        addNewMediaAlbum() {
-            // TODO:: otvoriti dodaj novi media album
-        },
+    name: "AppWrapper",
+    components: { Popup },
+    setup() {
+        const popupTriggers = ref({
+            addMediaAlbumTrigger: false,
+        });
+
+        const TogglePopup = (trigger) => {
+            popupTriggers.value[trigger] = !popupTriggers.value[trigger];
+        };
+
+        return {
+            Popup,
+            popupTriggers,
+            TogglePopup,
+        };
     },
 };
 </script>
