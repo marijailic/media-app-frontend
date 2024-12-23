@@ -1,5 +1,27 @@
 <template>
     <div
+        v-if="mediaThumbnails.length"
+        class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+    >
+        <div
+            v-for="(thumbnail, index) in mediaThumbnails"
+            :key="index"
+            class="relative rounded-lg p-4 text-center"
+        >
+            <img :src="thumbnail" class="w-full h-32 object-cover rounded-lg" />
+            <button
+                @click="removeThumbnail(index)"
+                class="absolute top-2 right-2 rounded-full bg-red-600 text-white/90 px-2 py-1 text-xs shadow-sm hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+            >
+                Delete
+            </button>
+        </div>
+    </div>
+
+    <div
+        :class="{
+            'mt-4': mediaThumbnails.length,
+        }"
         class="flex justify-center rounded-lg border border-dashed border-white/25 px-6 py-10 bg-white/10"
     >
         <div class="text-center flex flex-col items-center">
@@ -39,9 +61,11 @@ import { v4 as uuidv4 } from "uuid";
 import backendApiService from "@/services/backendApiService.js";
 
 export default {
+    name: "addMediaAlbum",
     data() {
         return {
             files: [],
+            mediaThumbnails: [],
         };
     },
     setup() {
@@ -73,15 +97,23 @@ export default {
                     },
                     body: formData,
                 });
+
+                const data = await response.json();
+                this.mediaThumbnails =
+                    data?.data.map((media) => media.full_url) || [];
             } catch (error) {
                 console.error("Error uploading files:", error);
             }
             this.files = [];
             // TODO:: pokazati uploadane fileove, mogucnost brisanja
+            // ne radi thumb konverzija
+            // manipulacija fileovima u mediaThumbnails
+            // dodati delete
         },
         finishUpload() {
             console.log("MediaAlbum upload finished!");
-            // TODO:: zatvori popup
+            // TODO:: zatvori popup, prikazi album na home
+            // TODO:: treba li popup quit brisati album?
         },
     },
 };
