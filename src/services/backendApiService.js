@@ -38,4 +38,15 @@ export default {
             headers: authHeaders,
         });
     },
+    delete: async ({ url, headers = {} }) => {
+        const authHeaders = {
+            ...getAuthHeaders(),
+            ...headers,
+        };
+
+        return await fetch(`${backendUrl}/${trimUrl(url)}`, {
+            method: "DELETE",
+            headers: authHeaders,
+        });
+    },
 };
