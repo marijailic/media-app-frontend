@@ -4,7 +4,7 @@ export default {
     theme: {
         extend: {
             colors: {
-                mustard: "#FFC107",
+                blue: "#A4D4B4",
             },
         },
     },

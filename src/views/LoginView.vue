@@ -27,7 +27,7 @@
                                 id="email"
                                 autocomplete="email"
                                 required
-                                class="block w-full rounded-md bg-white/10 px-3 py-1.5 text-base text-white/50 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-mustard/50 sm:text-sm/6"
+                                class="block w-full rounded-md bg-white/10 px-3 py-1.5 text-base text-white/50 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-blue/50 sm:text-sm/6"
                             />
                         </div>
                     </div>
@@ -42,7 +42,7 @@
                             <div class="text-sm">
                                 <a
                                     href="#"
-                                    class="font-semibold text-mustard/75 hover:text-mustard/90"
+                                    class="font-semibold text-blue/75 hover:text-blue/90"
                                     >Forgot password?</a
                                 >
                             </div>
@@ -55,7 +55,7 @@
                                 id="password"
                                 autocomplete="current-password"
                                 required
-                                class="block w-full rounded-md bg-white/10 px-3 py-1.5 text-base text-white/50 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-mustard/50 sm:text-sm/6"
+                                class="block w-full rounded-md bg-white/10 px-3 py-1.5 text-base text-white/50 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-blue/50 sm:text-sm/6"
                             />
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                     <div>
                         <button
                             type="submit"
-                            class="flex w-full justify-center rounded-md bg-mustard/75 px-3 py-1.5 text-sm/6 font-semibold text-white/95 shadow-sm hover:bg-mustard/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mustard/90"
+                            class="flex w-full justify-center rounded-md bg-blue/75 px-3 py-1.5 text-sm/6 font-semibold text-white/95 shadow-sm hover:bg-blue/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue/90"
                         >
                             Sign in
                         </button>
@@ -74,7 +74,7 @@
                     Not a member?
                     <a
                         href="#"
-                        class="font-semibold text-mustard/75 hover:text-mustard/90"
+                        class="font-semibold text-blue/75 hover:text-blue/90"
                         >You should be.</a
                     >
                 </p>
@@ -106,7 +106,7 @@ export default {
                 return;
             }
 
-            this.$router.push("/");
+            this.$router.push("/home");
         },
     },
 };
