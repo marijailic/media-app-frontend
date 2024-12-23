@@ -1,17 +1,20 @@
 <template>
     <div
-        v-if="mediaThumbnails.length"
-        class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+        v-if="uploadedMedia.length"
+        class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 overflow-y-auto h-40"
     >
         <div
-            v-for="(thumbnail, index) in mediaThumbnails"
-            :key="index"
+            v-for="media in uploadedMedia"
+            :key="media.id"
             class="relative rounded-lg p-4 text-center"
         >
-            <img :src="thumbnail" class="w-full h-32 object-cover rounded-lg" />
+            <img
+                :src="media.thumb_url || '/file-placeholder-img.png'"
+                class="w-full h-32 object-cover rounded-lg"
+            />
             <button
-                @click="removeThumbnail(index)"
-                class="absolute top-2 right-2 rounded-full bg-red-600 text-white/90 px-2 py-1 text-xs shadow-sm hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+                @click="handleFileDelete(media.id)"
+                class="absolute top-2 right-2 rounded-full bg-red/90 text-white/90 px-2 py-1 text-xs shadow-sm hover:bg-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red"
             >
                 Delete
             </button>
@@ -20,9 +23,12 @@
 
     <div
         :class="{
-            'mt-4': mediaThumbnails.length,
+            'mt-4': uploadedMedia.length,
         }"
         class="flex justify-center rounded-lg border border-dashed border-white/25 px-6 py-10 bg-white/10"
+        @dragover.prevent
+        @dragenter.prevent
+        @drop="handleFileDrop"
     >
         <div class="text-center flex flex-col items-center">
             <div class="flex text-sm/6 text-white/50">
@@ -36,16 +42,17 @@
                         name="file-upload"
                         type="file"
                         class="sr-only"
-                        accept=".jpeg, .png, .jpg, .pdf, .doc, .docx, .xls"
+                        accept=".jpeg, .png, .jpg, .pdf, .doc, .docx, .xls, .xlsx"
                         multiple
-                        @change="handleFileUpload"
+                        @change="handleFilesUpload"
                     />
                 </label>
                 <p class="pl-1">or drag and drop</p>
             </div>
             <p class="text-xs/5 text-white/40">
-                JPEG, PNG, JPG, PDF, DOC, DOCX, XLS files up to 2MB
+                JPEG, PNG, JPG, PDF, DOC, DOCX, XLS, XLSX
             </p>
+            <p class="text-xs/5 text-white/40">files up to 2MB</p>
         </div>
     </div>
     <button
@@ -65,7 +72,7 @@ export default {
     data() {
         return {
             files: [],
-            mediaThumbnails: [],
+            uploadedMedia: [],
         };
     },
     setup() {
@@ -74,10 +81,20 @@ export default {
         };
     },
     methods: {
-        async handleFileUpload(event) {
+        async handleFilesUpload(event) {
             const selectedFiles = Array.from(event.target.files);
             if (selectedFiles.length) {
                 this.files.push(...selectedFiles);
+                await this.uploadFiles();
+            }
+        },
+        async handleFileDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const droppedFiles = Array.from(event.dataTransfer.files);
+            if (droppedFiles.length) {
+                this.files.push(...droppedFiles);
                 await this.uploadFiles();
             }
         },
@@ -99,21 +116,33 @@ export default {
                 });
 
                 const data = await response.json();
-                this.mediaThumbnails =
-                    data?.data.map((media) => media.full_url) || [];
+                this.uploadedMedia.push(...data.data);
             } catch (error) {
                 console.error("Error uploading files:", error);
             }
             this.files = [];
-            // TODO:: pokazati uploadane fileove, mogucnost brisanja
-            // ne radi thumb konverzija
-            // manipulacija fileovima u mediaThumbnails
-            // dodati delete
+        },
+        async handleFileDelete(fileId) {
+            try {
+                const response = await backendApiService.delete({
+                    url: `api/media-album/${this.uuid}/media/${fileId}`,
+                    headers: {
+                        Accept: "application/json",
+                    },
+                });
+
+                if (response.ok) {
+                    this.uploadedMedia = this.uploadedMedia.filter(
+                        (media) => media.id !== fileId
+                    );
+                }
+            } catch (error) {
+                console.error("Error deleting files:", error);
+            }
         },
         finishUpload() {
-            console.log("MediaAlbum upload finished!");
-            // TODO:: zatvori popup, prikazi album na home
-            // TODO:: treba li popup quit brisati album?
+            this.$emit("closePopup");
+            // TODO:: prikazi album na home
         },
     },
 };
