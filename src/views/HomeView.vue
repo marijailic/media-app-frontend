@@ -13,6 +13,12 @@
             v-for="album in albums"
             :key="album.id"
             class="group relative bg-white/10 p-4 rounded-md shadow-md hover:shadow-lg hover:bg-white/20 transition-all"
+            @click="
+                () =>
+                    TogglePopup('popupTrigger', 'showMediaAlbum', {
+                        id: album.id,
+                    })
+            "
         >
             <img
                 :src="album.thumb_url || '/file-placeholder-img.png'"
@@ -21,15 +27,9 @@
         </a>
     </div>
 
-    <Popup
-        v-if="popupTriggers.addMediaAlbumTrigger"
-        :TogglePopup="() => TogglePopup('addMediaAlbumTrigger')"
-    >
-    </Popup>
-
     <button
         class="fixed bottom-10 right-10 w-14 h-14 rounded-full bg-blue/75 text-white/95 shadow-lg flex items-center justify-center z-10 hover:bg-blue/90 transition-all"
-        @click="() => TogglePopup('addMediaAlbumTrigger')"
+        @click="() => TogglePopup('popupTrigger', 'addMediaAlbum')"
     >
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -46,13 +46,22 @@
             />
         </svg>
     </button>
+
+    <Popup
+        v-if="popupTriggers.popupTrigger"
+        :TogglePopup="() => TogglePopup('popupTrigger')"
+        :componentName="activePopup"
+        :componentProps="popupData"
+    >
+    </Popup>
 </template>
 
 <script>
 import { ref } from "vue";
-import Popup from "@/components/Popup.vue";
 import { logout } from "@/services/authService";
 import { useMediaAlbumStore } from "@/stores/mediaAlbum.store";
+
+import Popup from "@/components/Popup.vue";
 
 export default {
     name: "HomeView",
@@ -65,17 +74,24 @@ export default {
     },
     setup() {
         const popupTriggers = ref({
-            addMediaAlbumTrigger: false,
+            popupTrigger: false,
         });
 
-        const TogglePopup = (trigger) => {
+        const activePopup = ref(null);
+        const popupData = ref({});
+
+        const TogglePopup = (trigger, componentName = null, data = {}) => {
             popupTriggers.value[trigger] = !popupTriggers.value[trigger];
+            activePopup.value = componentName;
+            popupData.value = data;
         };
 
         return {
             Popup,
             popupTriggers,
             TogglePopup,
+            activePopup,
+            popupData,
         };
     },
     async created() {
