@@ -4,6 +4,6 @@ export const keys = {
 
 export const storage = {
     set: (key, data) => localStorage.setItem(key, data),
-    delete: (key) => localStorage.removeItem(key),
     get: (key) => localStorage.getItem(key),
+    delete: (key) => localStorage.removeItem(key),
 };
