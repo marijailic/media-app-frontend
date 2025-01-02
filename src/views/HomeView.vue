@@ -12,7 +12,7 @@
         <a
             v-for="album in albums"
             :key="album.id"
-            class="group relative bg-white/10 p-4 rounded-md shadow-md hover:shadow-lg hover:bg-white/20 transition-all"
+            class="group relative bg-white/10 p-4 rounded-md shadow-md hover:shadow-lg hover:bg-white/20 transition-all cursor-pointer"
             @click="
                 () =>
                     TogglePopup('popupTrigger', 'showMediaAlbum', {
@@ -22,7 +22,7 @@
         >
             <img
                 :src="album.thumb_url || '/file-placeholder-img.png'"
-                class="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75"
+                class="aspect-square w-full rounded-md object-cover"
             />
         </a>
     </div>
