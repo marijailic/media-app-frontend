@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import addMediaAlbum from "./addMediaAlbum.vue";
+import addMediaAlbum from "@/components/addMediaAlbum.vue";
 
 export default {
     name: "Popup",

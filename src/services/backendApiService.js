@@ -1,4 +1,4 @@
-import { getAuthToken } from "./authService";
+import { getAuthToken } from "@/services/authService";
 
 const backendUrl = import.meta.env.VITE_MEDIA_APP_URL;
 

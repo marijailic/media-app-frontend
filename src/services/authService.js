@@ -1,4 +1,4 @@
-import { keys, storage } from "./storageService";
+import { keys, storage } from "@/services/storageService";
 const backendUrl = import.meta.env.VITE_MEDIA_APP_URL;
 
 const saveAuthToken = (tokenData) => {
