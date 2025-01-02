@@ -1,13 +1,13 @@
-import { keys, storage } from "./storageService";
+import { keys, storage } from "@/services/storageService";
 const backendUrl = import.meta.env.VITE_MEDIA_APP_URL;
 
 const saveAuthToken = (tokenData) => {
     storage.set(keys.TOKEN, JSON.stringify(tokenData));
 };
 
-export const getAuthToken = () => JSON.parse(storage.get(keys.TOKEN));
+const deleteAuthToken = () => storage.delete(keys.TOKEN);
 
-export const deleteAuthToken = () => storage.delete(keys.TOKEN);
+export const getAuthToken = () => JSON.parse(storage.get(keys.TOKEN));
 
 export const login = async ({ email, password }) => {
     const res = await fetch(`${backendUrl}/api/login`, {

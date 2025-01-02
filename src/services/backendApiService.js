@@ -1,10 +1,10 @@
-import { getAuthToken } from "./authService";
+import { getAuthToken } from "@/services/authService";
 
 const backendUrl = import.meta.env.VITE_MEDIA_APP_URL;
 
 const trimUrl = (url) => (url[0] === "/" ? url.slice(1) : url);
 
-const getAuthHeaders = () => {
+const createAuthHeaders = () => {
     const tokenData = getAuthToken();
     const tokenType = tokenData ? tokenData.token_type : null;
     const accessToken = tokenData ? tokenData.access_token : null;
@@ -14,39 +14,31 @@ const getAuthHeaders = () => {
         : {};
 };
 
+const createRequestHeaders = (customHeaders = {}) => {
+    return {
+        ...createAuthHeaders(),
+        ...customHeaders,
+    };
+};
+
 export default {
     post: async ({ url, headers = {}, body }) => {
-        const authHeaders = {
-            ...getAuthHeaders(),
-            ...headers,
-        };
-
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
             method: "POST",
-            headers: authHeaders,
+            headers: createRequestHeaders(headers),
             body,
         });
     },
     get: async ({ url, headers = {} }) => {
-        const authHeaders = {
-            ...getAuthHeaders(),
-            ...headers,
-        };
-
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
             method: "GET",
-            headers: authHeaders,
+            headers: createRequestHeaders(headers),
         });
     },
     delete: async ({ url, headers = {} }) => {
-        const authHeaders = {
-            ...getAuthHeaders(),
-            ...headers,
-        };
-
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
             method: "DELETE",
-            headers: authHeaders,
+            headers: createRequestHeaders(headers),
         });
     },
 };
