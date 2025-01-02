@@ -3,7 +3,7 @@
         class="popup fixed inset-0 flex items-center justify-center bg-black/50 z-50"
     >
         <div
-            class="popup-inner w-full max-w-md rounded-lg bg-white/10 p-6 shadow-lg"
+            class="popup-inner w-full max-w-md rounded-lg bg-black p-6 shadow-lg"
         >
             <component
                 :is="componentName"
