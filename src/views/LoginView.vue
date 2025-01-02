@@ -92,7 +92,8 @@
 <script>
 import { login } from "@/services/authService";
 
-// TODO:: You should be. - dodati registraciju na backend?
+// TODO:: You should be. - dodati na backend?
+// TODO:: Forgot password? - dodati na backend?
 
 export default {
     name: "LoginView",
