@@ -96,7 +96,7 @@ import { login } from "@/services/authService";
 
 export default {
     name: "LoginView",
-    data: function () {
+    data() {
         return {
             email: "",
             password: "",

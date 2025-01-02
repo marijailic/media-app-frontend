@@ -1,10 +1,10 @@
 <template>
     <div
-        v-if="uploadedMedia.length"
+        v-if="uploadedFiles.length"
         class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 overflow-y-auto h-40"
     >
         <div
-            v-for="media in uploadedMedia"
+            v-for="media in uploadedFiles"
             :key="media.id"
             class="relative rounded-lg p-4 text-center"
         >
@@ -23,12 +23,12 @@
 
     <div
         :class="{
-            'mt-4': uploadedMedia.length,
+            'mt-4': uploadedFiles.length,
         }"
         class="flex justify-center rounded-lg border border-dashed border-white/25 px-6 py-10 bg-white/10"
         @dragover.prevent
         @dragenter.prevent
-        @drop="handleFileDrop"
+        @drop="handleDroppedFilesUpload"
     >
         <div class="text-center flex flex-col items-center">
             <div class="flex text-sm/6 text-white/50">
@@ -44,7 +44,7 @@
                         class="sr-only"
                         accept=".jpeg, .png, .jpg, .pdf, .doc, .docx, .xls, .xlsx"
                         multiple
-                        @change="handleFilesUpload"
+                        @change="handleSelectedFilesUpload"
                     />
                 </label>
                 <p class="pl-1">or drag and drop</p>
@@ -65,80 +65,53 @@
 
 <script>
 import { v4 as uuidv4 } from "uuid";
-import backendApiService from "@/services/backendApiService.js";
+import { useMediaAlbumStore } from "@/stores/mediaAlbum.store";
 
 export default {
     name: "addMediaAlbum",
     data() {
         return {
-            files: [],
-            uploadedMedia: [],
+            mediaAlbumStore: useMediaAlbumStore(),
+            filesForUpload: [],
+            uploadedFiles: [],
         };
     },
     setup() {
         return {
-            uuid: uuidv4(),
+            albumId: uuidv4(),
         };
     },
     methods: {
-        async handleFilesUpload(event) {
+        async handleSelectedFilesUpload(event) {
             const selectedFiles = Array.from(event.target.files);
             if (selectedFiles.length) {
-                this.files.push(...selectedFiles);
-                await this.uploadFiles();
+                await upload(selectedFiles);
             }
         },
-        async handleFileDrop(event) {
+        async handleDroppedFilesUpload(event) {
             event.preventDefault();
             event.stopPropagation();
 
             const droppedFiles = Array.from(event.dataTransfer.files);
             if (droppedFiles.length) {
-                this.files.push(...droppedFiles);
-                await this.uploadFiles();
+                await upload(droppedFiles);
             }
         },
-        async uploadFiles() {
-            const formData = new FormData();
-            formData.append("id", this.uuid);
-
-            this.files.forEach((file, index) => {
-                formData.append(`files[${index}]`, file);
-            });
-
-            try {
-                const response = await backendApiService.post({
-                    url: "api/media-album",
-                    headers: {
-                        Accept: "application/json",
-                    },
-                    body: formData,
-                });
-
-                const data = await response.json();
-                this.uploadedMedia.push(...data.data);
-            } catch (error) {
-                console.error("Error uploading files:", error);
-            }
-            this.files = [];
+        async upload(files) {
+            this.filesForUpload.push(...files);
+            const uploadedFilesData = await this.mediaAlbumStore.uploadFiles(
+                this.albumId,
+                this.filesForUpload
+            );
+            this.uploadedFiles.push(...uploadedFilesData);
+            this.filesForUpload = [];
         },
         async handleFileDelete(fileId) {
-            try {
-                const response = await backendApiService.delete({
-                    url: `api/media-album/${this.uuid}/media/${fileId}`,
-                    headers: {
-                        Accept: "application/json",
-                    },
-                });
+            await this.mediaAlbumStore.deleteFile(this.albumId, fileId);
 
-                if (response.ok) {
-                    this.uploadedMedia = this.uploadedMedia.filter(
-                        (media) => media.id !== fileId
-                    );
-                }
-            } catch (error) {
-                console.error("Error deleting files:", error);
-            }
+            this.uploadedFiles = this.uploadedFiles.filter(
+                (media) => media.id !== fileId
+            );
         },
         finishUpload() {
             this.$emit("closePopup");

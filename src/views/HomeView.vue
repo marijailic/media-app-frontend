@@ -52,13 +52,14 @@
 import { ref } from "vue";
 import Popup from "@/components/Popup.vue";
 import { logout } from "@/services/authService";
-import backendApiService from "@/services/backendApiService";
+import { useMediaAlbumStore } from "@/stores/mediaAlbum.store";
 
 export default {
     name: "HomeView",
     components: { Popup },
     data() {
         return {
+            mediaAlbumStore: useMediaAlbumStore(),
             albums: [],
         };
     },
@@ -78,7 +79,7 @@ export default {
         };
     },
     async created() {
-        await this.fetchAlbumsAndThumbnails();
+        this.albums = await this.mediaAlbumStore.fetchAlbumsWithThumbnails();
     },
     methods: {
         handleLogout() {
@@ -90,44 +91,6 @@ export default {
             }
 
             this.$router.push("/login");
-        },
-        async fetchAlbumsAndThumbnails() {
-            try {
-                const albumResponse = await backendApiService.get({
-                    url: "api/media-album/albums",
-                    headers: {
-                        Accept: "application/json",
-                    },
-                });
-
-                const albumData = await albumResponse.json();
-
-                const queryParams = new URLSearchParams();
-                albumData.data.forEach((album) =>
-                    queryParams.append("album_ids[]", album.id)
-                );
-
-                const thumbnailResponse = await backendApiService.get({
-                    url: `api/media-album/thumbnails?${queryParams.toString()}`,
-                    headers: {
-                        Accept: "application/json",
-                    },
-                });
-
-                const thumbnailData = await thumbnailResponse.json();
-
-                this.albums = albumData.data.map((album) => {
-                    const thumbnail = thumbnailData.data.find(
-                        (thumb) => thumb.id === album.id
-                    );
-                    return {
-                        ...album,
-                        thumb_url: thumbnail ? thumbnail.thumb_url : null,
-                    };
-                });
-            } catch (error) {
-                console.error("Error fetching albums or thumbnails:", error);
-            }
         },
     },
 };
