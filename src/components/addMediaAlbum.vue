@@ -85,7 +85,7 @@ export default {
         async handleSelectedFilesUpload(event) {
             const selectedFiles = Array.from(event.target.files);
             if (selectedFiles.length) {
-                await upload(selectedFiles);
+                await this.upload(selectedFiles);
             }
         },
         async handleDroppedFilesUpload(event) {
@@ -94,7 +94,7 @@ export default {
 
             const droppedFiles = Array.from(event.dataTransfer.files);
             if (droppedFiles.length) {
-                await upload(droppedFiles);
+                await this.upload(droppedFiles);
             }
         },
         async upload(files) {
