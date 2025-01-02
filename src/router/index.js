@@ -19,12 +19,14 @@ const routes = [
         },
     },
     {
+        path: "/error",
+        name: "ErrorView",
+        component: () => import("@/views/ErrorView.vue"),
+    },
+    {
         path: "/:pathMatch(.*)*",
         name: "NotFoundView",
         component: () => import("@/views/NotFoundView.vue"),
-        meta: {
-            authRequired: false,
-        },
     },
 ];
 
